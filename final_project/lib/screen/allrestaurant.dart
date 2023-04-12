@@ -16,6 +16,13 @@ class AllRestaurantScreen extends StatefulWidget {
 }
 
 class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLocation();
+  }
+
   double userlong = 0;
   double userlat = 0;
   void getLocation() async {
@@ -24,17 +31,6 @@ class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     print(position);
-    setState(() {
-      userlong = position.longitude;
-      userlat = position.latitude;
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getLocation();
   }
 
   final auth = FirebaseAuth.instance;
@@ -76,7 +72,6 @@ class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
                       style: TextStyle(color: Colors.blue),
                     ),
                     onTap: () {
-                      getLocation();
                       Navigator.push(
                         context,
                         MaterialPageRoute(

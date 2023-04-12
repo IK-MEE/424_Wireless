@@ -49,7 +49,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map Screen'),
+        title: Text('Map'),
       ),
       body: GoogleMap(
         markers: _markers,
