@@ -16,24 +16,28 @@ class AllRestaurantScreen extends StatefulWidget {
 }
 
 class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getLocation();
-  }
-
   double userlong = 0;
   double userlat = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void getLocation() async {
     await Geolocator.checkPermission();
     await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     print(position);
+    setState(() {
+      userlong = position.longitude;
+      userlat = position.latitude;
+    });
   }
 
   final auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,35 +63,48 @@ class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
             );
           } else {
             return ListView(
-              children: snapshot.data!.docs.map((document) {
-                return Card(
-                  elevation: 5,
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(document["name"] +
-                        "   Contract: " +
-                        document["contract"]),
-                    subtitle: Text(
-                      document["description"],
-                      style: TextStyle(color: Colors.blue),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: SizedBox(
+                    height: 40,
+                    child: FloatingActionButton(
+                      onPressed: getLocation,
+                      child: Icon(Icons.refresh),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MapScreen(
-                            userLongitude: userlong,
-                            userLatitude: userlat,
-                            resLongitude:
-                                double.parse(document['resLongitude']),
-                            resLatitude: double.parse(document['resLatitude']),
-                          ),
-                        ),
-                      );
-                    },
                   ),
-                );
-              }).toList(),
+                ),
+                ...snapshot.data!.docs.map((document) {
+                  return Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      title: Text(document["name"] +
+                          "   Contract: " +
+                          document["contract"]),
+                      subtitle: Text(
+                        document["description"],
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MapScreen(
+                              userLongitude: userlong,
+                              userLatitude: userlat,
+                              resLongitude:
+                                  double.parse(document['resLongitude']),
+                              resLatitude:
+                                  double.parse(document['resLatitude']),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }).toList(),
+              ],
             );
           }
         },
