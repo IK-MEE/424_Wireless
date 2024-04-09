@@ -57,6 +57,8 @@ class _AllRestaurantScreenState extends State<AllRestaurantScreen> {
         stream:
             FirebaseFirestore.instance.collection("restaurants").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          print(snapshot.connectionState);
+          print(snapshot);
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
